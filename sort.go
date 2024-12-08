@@ -29,7 +29,17 @@ func dive(step interface{}, target string, found *[]interface{}) {
 	}
 }
 
-func sort(src interface{}, target_arr string, key string, dir string) {
+func sort(src interface{}, query string, key string, dir string) {
+	target_arr, esc := parse_sort_query(query)
+	idx,digits,err := parse_idx_operator(query, esc)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	target_arr = target_arr[:len(target_arr) - digits]
+	fmt.Println(target_arr)
+
 	var found []interface{}
 	arr, ok := src.([]interface{})
 	if ok {
@@ -43,7 +53,11 @@ func sort(src interface{}, target_arr string, key string, dir string) {
 			dive(obj[k], target_arr, &found)
 		}
 	}
-	fmt.Println(found)
+	if idx < len(found) && idx >= 0 {
+		fmt.Println(found[idx])
+	} else {
+		fmt.Println(found)
+	}
 }
 
 func (a *Arr) Sort(target_arr string, key string, dir string) {
