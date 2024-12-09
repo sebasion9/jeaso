@@ -1,16 +1,17 @@
-package main
+package core_test
 
 import (
-	//"strings"
 	"testing"
+	"jesao++/core"
 )
 
 // assume the position doesnt matter
+var parser core.Parser = core.Parser{}
 
 func TestEscapeDollar(t *testing.T) {
 	in := "$franzl$"
 	want := "\\$franzl\\$"
-	got := escape(in)
+	got := parser.Escape(in)
 	if got != want {
 		t.Errorf("\ngot:\t%s\nwanted:\t%s", got, want)
 	}
@@ -18,7 +19,7 @@ func TestEscapeDollar(t *testing.T) {
 func TestEscapeSlash(t * testing.T) {
 	in := "\\franzl"
 	want := "\\\\franzl"
-	got := escape(in)
+	got := parser.Escape(in)
 	if got != want {
 		t.Errorf("\ngot:\t%s\nwanted:\t%s", got, want)
 	}
@@ -26,7 +27,7 @@ func TestEscapeSlash(t * testing.T) {
 func TestOpenBracket(t *testing.T) {
 	in := "[franzl"
 	want := "\\[franzl"
-	got := escape(in)
+	got := parser.Escape(in)
 	if got != want {
 		t.Errorf("\ngot:\t%s\nwanted:\t%s", got, want)
 	}
@@ -34,7 +35,7 @@ func TestOpenBracket(t *testing.T) {
 func TestOpenBrackets(t *testing.T) {
 	in := "[]franzl"
 	want := "\\[\\]franzl"
-	got := escape(in)
+	got := parser.Escape(in)
 	if got != want {
 		t.Errorf("\ngot:\t%s\nwanted:\t%s", got, want)
 	}	
@@ -42,18 +43,18 @@ func TestOpenBrackets(t *testing.T) {
 func TestOpenBracketsDollar(t *testing.T) {
 	in := "[$]franzl"
 	want := "\\[\\$\\]franzl"
-	got := escape(in)
+	got := parser.Escape(in)
 	if got != want {
 		t.Errorf("\ngot:\t%s\nwanted:\t%s", got, want)
 	}	
 }
-func TestParseQueryEscaped(t *testing.T) {
+func TestParseQuerySeparate(t *testing.T) {
 	want_key := "$format"
-	query := "$" + escape(want_key) + "[0]"
+	query := "$" + parser.Escape(want_key) + "[0]"
 
-	key, idx_char_map := parse_sort_query(query)
-	got_idx, digits, err := parse_idx_operator(query, idx_char_map)
-	key = unescape(key[:len(key) - digits])
+	key, idx_char_map := parser.ParseSortQuery(query)
+	got_idx, digits, err := parser.ParseIdxOperator(query, idx_char_map)
+	key = parser.Unescape(key[:len(key) - digits])
 
 	want_idx := 0
 	if err != nil {
@@ -70,6 +71,23 @@ func TestParseQueryEscaped(t *testing.T) {
 	if key != want_key {
 		t.Errorf("\ngot:\t%s\nwanted:\t%s", key, want_key)
 	}
+}
+func TestParseQuery(t *testing.T) {
+	want_key := "$[]format"
+	want_idx := 0
+	query := "$" + parser.Escape(want_key) + "[0]"
+	key, idx, err := parser.ParseKeyAndIdx(query)
+	if err != nil {
+		t.Errorf("err: %v", err)
+	}
+
+	if idx != want_idx {
+		t.Errorf("\ngot:\t%d\nwanted:\t%d", idx, want_idx)
+	}
+	if key != want_key {
+		t.Errorf("\ngot:\t%s\nwanted:\t%s", key, want_key)
+	}
+
 }
 
 

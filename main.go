@@ -6,6 +6,7 @@ import (
 	"os"
 	"slices"
 	"strings"
+	"jesao++/core"
 )
 
 
@@ -79,9 +80,9 @@ func main() {
 
 	// deserialize top level array or object
 
-	var djson DJSON
+	var jcore core.JSONCore
 
-	djson.UnmarshalJSON(body)
+	jcore.UnmarshalJSON(body)
 	if err != nil {
 		fmt.Println("failed to deserialize json")
 		fmt.Printf("err: %v\n", err)
@@ -92,14 +93,14 @@ func main() {
 
 	switch action {
 	case "sort":
-		djson.serializable.Sort(action_arg, "", "")
+		jcore.Sort(action_arg, "", "")
 	case "reverse":
-		djson.serializable.Reverse()
+		//core.Reverse()
 	}
 
 	// serialize
 
-	data, err := djson.MarshalJSON()
+	data, err := jcore.MarshalJSON()
 	if err != nil {
 		fmt.Println("failed to serialize json")
 	}
