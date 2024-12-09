@@ -2,8 +2,6 @@ package core
 
 import (
 	"fmt"
-	"slices"
-	"sort"
 )
 
 func (c *JSONCore) dive(step interface{}, target string, found *[]interface{}) {
@@ -51,6 +49,7 @@ func (c *JSONCore) sort_enter(src interface{}, query string, by_key string, orde
 	}
 	// if found[i] array is map[string]interface{}, and by_key given, sort the array by key and order rule
 	// if the array is of primitive type, sort by order rule
+	// this shouldnt be done here, but in JSONCore.dive(), to modify the arrays in place
 	if idx < len(found) && idx > 0 {
 		// sort found[idx] array
 		fmt.Println(found[idx])
