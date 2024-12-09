@@ -27,14 +27,16 @@ func (p *Parser) Escape(in string) string {
 func (p *Parser) Unescape(in string) string {
 	out := in
 	chars := strings.Split(in, "")
+	if(len(chars) < 1) {
+		return out
+	}
 	last := chars[0]
+	esc_count := 0
 	for i := 1; i < len(chars); i++ {
 		curr := chars[i]
 		if slices.Contains(p.get_escape_chars(), curr) && last == "\\"  { // && chars[i] != "\\" {
-			out = out[:i-1] + out[i:]
-			// i=2
-			// a\bcd
-			// a\b
+			out = out[:i - 1 - esc_count] + out[i - esc_count:]
+			esc_count++
 		}
 		last = chars[i]
 	}
