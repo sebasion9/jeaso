@@ -1,4 +1,5 @@
 # jesao++
+[IPA](https://en.wikipedia.org/wiki/Help:IPA/Polish): [ʐɛsɔ̃]
 
 JSON formatting tool (work in progress).
 
